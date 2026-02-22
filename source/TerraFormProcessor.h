@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 
+#include "FftBlockProducer.h"
+
 class TerraFormProcessor final : public juce::AudioProcessor
 {
 public:
@@ -34,6 +36,10 @@ public:
     void getStateInformation(juce::MemoryBlock& dest_data) override;
     void setStateInformation(const void* data, int size_in_bytes) override;
 
+    FftBlockProducer& getFft() { return fft_block_producer_; }
+
 private:
+    FftBlockProducer fft_block_producer_;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TerraFormProcessor)
 };

@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 
 #include "TerraFormProcessor.h"
+#include "WaveformDisplay.h"
 
 class TerraFormEditor final : public juce::AudioProcessorEditor
 {
@@ -15,6 +16,7 @@ public:
 
 private:
     TerraFormProcessor& processor_ref_;
+    WaveformDisplay     waveform_display_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TerraFormEditor)
 };

@@ -7,8 +7,12 @@
 TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     : juce::AudioProcessorEditor(&p)
     , processor_ref_(p)
+    , waveform_display_(p)
 {
-    setSize(400, 300);
+    addAndMakeVisible(waveform_display_);
+
+    setSize(1024, 512);
+    setResizable(true, true);
 }
 
 /*---------------------------------------------------------------------------
@@ -17,11 +21,7 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
 void
 TerraFormEditor::paint(juce::Graphics& g)
 {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-
-    g.setColour(juce::Colours::white);
-    g.setFont(15.0f);
-    g.drawFittedText("Hello TerraForm!", getLocalBounds(), juce::Justification::centred, 1);
+    g.fillAll(TerraForm::Colours::BACKGROUND_COLOUR);
 }
 
 /*---------------------------------------------------------------------------
@@ -30,6 +30,8 @@ TerraFormEditor::paint(juce::Graphics& g)
 void
 TerraFormEditor::resized()
 {
+    const auto& bounds = getLocalBounds();
+    waveform_display_.setBounds(bounds.withSizeKeepingCentre(bounds.getWidth() * 0.8, bounds.getHeight() * 0.8));
 }
 
 /*---------------------------------------------------------------------------
