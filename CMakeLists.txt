@@ -39,6 +39,8 @@ juce_generate_juce_header(${PROJECT_NAME})
 set(PROJECT_SOURCES
         source/TerraFormEditor.cpp
         source/TerraFormProcessor.cpp
+        source/colour_picker/ColourPicker.cpp
+        source/colour_picker/ColourPickerButton.cpp
         source/fft/FftBlockProducer.cpp
         source/waveform_display/WaveformDisplay.cpp
 )
@@ -46,6 +48,8 @@ set(PROJECT_SOURCES
 set(PROJECT_HEADERS
         source/TerraFormEditor.h
         source/TerraFormProcessor.h
+        source/colour_picker/ColourPicker.h
+        source/colour_picker/ColourPickerButton.h
         source/fft/FftBlockProducer.h
         source/utility/GlobalConstants.h
         source/waveform_display/WaveformDisplay.h
@@ -60,6 +64,7 @@ target_sources(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/source/colour_picker
         ${CMAKE_CURRENT_SOURCE_DIR}/source/fft
         ${CMAKE_CURRENT_SOURCE_DIR}/source/utility
         ${CMAKE_CURRENT_SOURCE_DIR}/source/waveform_display

@@ -3,10 +3,13 @@
 /*---------------------------------------------------------------------------
 **
 */
-WaveformDisplay::WaveformDisplay(TerraFormProcessor& p)
+WaveformDisplay::WaveformDisplay(TerraFormProcessor& p, ColourPicker& colour_picker)
     : processor_ref_(p)
     , waveform_data_()
+    , colour_picker_(colour_picker)
+    , waveform_colour_(colour_picker_.getCurrentColour())
 {
+    colour_picker_.addChangeListener(this);
     startTimerHz(60);
 }
 
@@ -16,6 +19,7 @@ WaveformDisplay::WaveformDisplay(TerraFormProcessor& p)
 WaveformDisplay::~WaveformDisplay()
 {
     stopTimer();
+    colour_picker_.removeChangeListener(this);
 }
 
 /*---------------------------------------------------------------------------
@@ -24,9 +28,11 @@ WaveformDisplay::~WaveformDisplay()
 void
 WaveformDisplay::paint(juce::Graphics& g)
 {
-    for (int i = 0; i < waveform_data_.size(); ++i) {
-        static constexpr auto alpha = 1.f;
-        g.setColour(TerraForm::Colours::WAVEFORM_COLOURS.at(i).withAlpha(alpha));
+    for (int i = 0; i < TerraForm::FFT::NUM_PATHS; ++i) {
+        // Alpha value: descend from 1 to 0 as we progress through the data.
+        const auto alpha = 1.f - (static_cast< float >(i) / static_cast< float >(TerraForm::FFT::NUM_PATHS));
+
+        g.setColour(waveform_colour_.withAlpha(alpha));
         g.strokePath(getWaveformPath(waveform_data_.at(i), i), juce::PathStrokeType(1.f));
     }
 }
@@ -47,6 +53,17 @@ WaveformDisplay::timerCallback()
         waveform_data_[0] = fft_data;
 
         repaint();
+    }
+}
+
+/*---------------------------------------------------------------------------
+**
+*/
+void
+WaveformDisplay::changeListenerCallback(juce::ChangeBroadcaster* source)
+{
+    if (source == &colour_picker_) {
+        waveform_colour_ = colour_picker_.getCurrentColour();
     }
 }
 
