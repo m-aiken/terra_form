@@ -69,7 +69,7 @@ FftBlockProducer::performFft(TerraForm::FFT::FftDataBlock& fft_data) const
     juce::FloatVectorOperations::multiply(fft_data.data(), 1.f / static_cast< float >(NUM_BINS), NUM_BINS + 1);
 
     for (size_t i = 0; i < fft_data.size(); ++i) {
-        fft_data.at(i) = juce::Decibels::gainToDecibels(fft_data.at(i));
+        fft_data.at(i) = juce::Decibels::gainToDecibels(fft_data.at(i), TerraForm::MIN_DB);
     }
 }
 

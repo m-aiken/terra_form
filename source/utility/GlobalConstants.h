@@ -5,6 +5,11 @@
 namespace TerraForm
 {
 
+static constexpr float MIN_HZ = 20.f;
+static constexpr float MAX_HZ = 20000.f;
+static constexpr float MIN_DB = -96.f;
+static constexpr float MAX_DB = 0.f;
+
 namespace FFT
 {
 

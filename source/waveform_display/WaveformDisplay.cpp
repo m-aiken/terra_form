@@ -8,8 +8,18 @@ WaveformDisplay::WaveformDisplay(TerraFormProcessor& p, ColourPicker& colour_pic
     , waveform_data_()
     , colour_picker_(colour_picker)
     , waveform_colour_(colour_picker_.getCurrentColour())
+    , bin_width_(static_cast< float >(processor_ref_.getSampleRate() / static_cast< double >(TerraForm::FFT::FFT_SIZE)))
+    , bounds_height_(0.0)
+    , waveform_height_(0.0)
+    , waveform_origin_offset_(0.0)
+    , waveform_width_(0.0)
 {
+    for (auto& wd : waveform_data_) {
+        wd.fill(TerraForm::MIN_DB);
+    }
+
     colour_picker_.addChangeListener(this);
+
     startTimerHz(60);
 }
 
@@ -35,6 +45,19 @@ WaveformDisplay::paint(juce::Graphics& g)
         g.setColour(waveform_colour_.withAlpha(alpha));
         g.strokePath(getWaveformPath(waveform_data_.at(i), i), juce::PathStrokeType(1.f));
     }
+}
+
+/*---------------------------------------------------------------------------
+**
+*/
+void
+WaveformDisplay::resized()
+{
+    const auto& bounds      = getLocalBounds();
+    bounds_height_          = bounds.getHeight();
+    waveform_height_        = bounds_height_ * 0.2;
+    waveform_origin_offset_ = (bounds_height_ - waveform_height_) / TerraForm::FFT::NUM_PATHS;
+    waveform_width_         = bounds.getWidth() - (waveform_origin_offset_ * TerraForm::FFT::NUM_PATHS);
 }
 
 /*---------------------------------------------------------------------------
@@ -75,68 +98,34 @@ WaveformDisplay::getWaveformPath(const TerraForm::FFT::FftDataBlock& fft_data, c
 {
     juce::Path path;
 
-    const auto& full_bounds        = getLocalBounds();
-    const auto& full_bounds_width  = full_bounds.getWidth();
-    const auto& full_bounds_height = full_bounds.getHeight();
-    const auto& waveform_height    = full_bounds_height * 0.2;
-    const auto& offset             = (full_bounds_height - waveform_height) / TerraForm::FFT::NUM_PATHS;
-    const auto& waveform_width     = full_bounds_width - (offset * TerraForm::FFT::NUM_PATHS);
-    const auto& x_offset           = path_index * offset;
-    const auto& y_offset           = path_index * offset;
-
-    const auto& drawable_bounds = full_bounds.withHeight(full_bounds_height - waveform_height).withY(waveform_height);
-    const auto& drawable_bounds_height = drawable_bounds.getHeight();
-
-    const auto& waveform_bounds =
-        juce::Rectangle< int >(x_offset, drawable_bounds_height - y_offset, waveform_width, waveform_height);
-
-    const auto& waveform_bounds_left   = waveform_bounds.getX();
-    const auto& waveform_bounds_bottom = waveform_bounds.getBottom();
-
-    const float bin_width = static_cast< float >(getBinWidth());
+    const auto  x_offset          = path_index * waveform_origin_offset_;
+    const auto  y_offset          = path_index * waveform_origin_offset_;
+    const auto& waveform_x_origin = x_offset;
+    const auto& waveform_y_origin = bounds_height_ - y_offset;
 
     path.clear();
-    path.startNewSubPath(waveform_bounds_left, waveform_bounds_bottom);
+    path.startNewSubPath(waveform_x_origin, waveform_y_origin);
 
     for (size_t i = 1; i < TerraForm::FFT::NUM_BINS + 1; i += TerraForm::FFT::PATH_RESOLUTION) {
-        const auto raw_freq     = (i * bin_width);
-        const auto norm_freq    = juce::mapFromLog10(raw_freq, 20.f, 20000.f);
-        const auto x_coordinate = std::floor(norm_freq * waveform_width);
+        const auto raw_freq     = (i * bin_width_);
+        const auto norm_freq    = juce::mapFromLog10(raw_freq, TerraForm::MIN_HZ, TerraForm::MAX_HZ);
+        const auto x_coordinate = std::floor(norm_freq * waveform_width_);
 
-        if (x_coordinate > waveform_width) {
+        if (x_coordinate > waveform_width_) {
             continue;
         }
 
-        const auto y_coordinate = getYCoordinate(fft_data.at(i), waveform_height);
+        const auto y_coordinate =
+            juce::jmap< float >(fft_data.at(i), TerraForm::MIN_DB, TerraForm::MAX_DB, 0, waveform_height_);
 
         if (std::isnan(y_coordinate) || std::isinf(y_coordinate)) {
             continue;
         }
 
-        path.lineTo(waveform_bounds_left + x_coordinate, waveform_bounds_bottom - y_coordinate);
+        path.lineTo(waveform_x_origin + x_coordinate, waveform_y_origin - y_coordinate);
     }
 
-    // path.lineTo(width, bounds_height);
-
     return path;
-}
-
-/*---------------------------------------------------------------------------
-**
-*/
-/*static*/ float
-WaveformDisplay::getYCoordinate(const float& sample, const int& dest_height)
-{
-    return juce::jmap< float >(sample, -100.f, 0.f, 0, dest_height);
-}
-
-/*---------------------------------------------------------------------------
-**
-*/
-double
-WaveformDisplay::getBinWidth() const
-{
-    return processor_ref_.getSampleRate() / static_cast< double >(TerraForm::FFT::FFT_SIZE);
 }
 
 /*---------------------------------------------------------------------------

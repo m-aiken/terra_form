@@ -156,13 +156,6 @@ TerraFormProcessor::processBlock(juce::AudioBuffer< float >& buffer, juce::MidiB
         buffer.clear(i, 0, buffer.getNumSamples());
     }
 
-#if 0
-    for (int channel = 0; channel < num_input_channels; ++channel) {
-        auto* channelData = buffer.getWritePointer(channel);
-        juce::ignoreUnused(channelData);
-    }
-
-#endif
     for (int i = 0; i < buffer.getNumSamples(); ++i) {
         fft_block_producer_.pushSample(buffer.getSample(0, i));
     }
