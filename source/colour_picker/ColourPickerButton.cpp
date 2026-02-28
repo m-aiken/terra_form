@@ -9,6 +9,7 @@ ColourPickerButton::ColourPickerButton(ColourPicker& colour_picker)
     , colour_picker_(colour_picker)
 {
     setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    setBufferedToImage(true);
     colour_picker_.addChangeListener(this);
 }
 
@@ -28,8 +29,16 @@ ColourPickerButton::paintButton(juce::Graphics& g, bool should_draw_button_as_hi
 {
     juce::ignoreUnused(should_draw_button_as_highlighted, should_draw_button_as_down);
 
+    const auto& bounds = getLocalBounds();
+
+    juce::Path triangle;
+    triangle.startNewSubPath(0, 0);
+    triangle.lineTo(bounds.getRight(), 0);
+    triangle.lineTo(0, bounds.getBottom());
+    triangle.closeSubPath();
+
     g.setColour(colour_picker_.getCurrentColour());
-    g.fillEllipse(getLocalBounds().toFloat());
+    g.fillPath(triangle);
 }
 
 /*---------------------------------------------------------------------------
