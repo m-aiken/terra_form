@@ -22,21 +22,20 @@ private:
     ColourPickerButton  colour_picker_button_;
     WaveformDisplay     waveform_display_;
 
-    enum {
-        INITIAL_WIDTH  = 1024,
-        INITIAL_HEIGHT = 512,
+    static constexpr int INITIAL_WIDTH  = 1024;
+    static constexpr int INITIAL_HEIGHT = 512;
+    static constexpr int MIN_WIDTH      = 156;  //! Max is calculated from the monitor size.
+    static constexpr int MIN_HEIGHT     = 64;   //! Max is calculated from the monitor size.
 
-        MIN_WIDTH  = 156,
-        MIN_HEIGHT = 64,
-        // Max width/height are calculated from the monitor size.
+    static constexpr int PADDING = 8;
 
-        // Below a certain window size the colour picker button
-        // takes up to high a proportion of the window. Hide it.
-        MIN_WIDTH_FOR_CPB  = 320,
-        MIN_HEIGHT_FOR_CPB = 160,
+    // Below a certain window size the colour picker button
+    // takes up too high a proportion of the window. Hide it.
+    static constexpr int CPB_MIN_WINDOW_WIDTH  = 320;
+    static constexpr int CPB_MIN_WINDOW_HEIGHT = 160;
+    static constexpr int CPB_DIAMETER          = 16;
 
-        PADDING = 8,
-    };
+    void showColourPicker();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TerraFormEditor)
 };

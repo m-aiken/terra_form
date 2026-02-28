@@ -13,22 +13,13 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     addAndMakeVisible(colour_picker_button_);
     addAndMakeVisible(waveform_display_);
 
-    colour_picker_button_.onClick = [&]() {
-        juce::DialogWindow::LaunchOptions opts;
-
-        opts.content                      = { &colour_picker_, false };
-        opts.componentToCentreAround      = this;
-        opts.escapeKeyTriggersCloseButton = true;
-
-        opts.launchAsync();
-    };
+    colour_picker_button_.onClick = [&]() { showColourPicker(); };
 
     setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
     setResizable(true, true);
 
-    const auto* primary_display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
-
-    if (primary_display != nullptr) {
+    if (const auto* primary_display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
+        primary_display != nullptr) {
         setResizeLimits(MIN_WIDTH, MIN_HEIGHT, primary_display->userArea.getWidth(), primary_display->userArea.getHeight());
     }
 }
@@ -48,11 +39,29 @@ TerraFormEditor::paint(juce::Graphics& g)
 void
 TerraFormEditor::resized()
 {
-    const auto& bounds = getLocalBounds();
-    waveform_display_.setBounds(bounds.withSizeKeepingCentre(bounds.getWidth() * 0.8, bounds.getHeight() * 0.8));
+    const auto& bounds        = getLocalBounds();
+    const auto& bounds_width  = bounds.getWidth();
+    const auto& bounds_height = bounds.getHeight();
+    waveform_display_.setBounds(bounds.withSizeKeepingCentre(bounds_width * 0.8, bounds_height * 0.8));
 
-    colour_picker_button_.setBounds(PADDING, PADDING, ColourPickerButton::DIAMETER, ColourPickerButton::DIAMETER);
-    colour_picker_button_.setVisible(bounds.getWidth() > MIN_WIDTH_FOR_CPB && bounds.getHeight() > MIN_HEIGHT_FOR_CPB);
+    const bool hide_colour_picker = bounds_width < CPB_MIN_WINDOW_WIDTH && bounds_height < CPB_MIN_WINDOW_HEIGHT;
+    colour_picker_button_.setBounds(PADDING, PADDING, CPB_DIAMETER, CPB_DIAMETER);
+    colour_picker_button_.setVisible(!hide_colour_picker);
+}
+
+/*---------------------------------------------------------------------------
+**
+*/
+void
+TerraFormEditor::showColourPicker()
+{
+    juce::DialogWindow::LaunchOptions opts;
+
+    opts.content                      = { &colour_picker_, false };
+    opts.componentToCentreAround      = this;
+    opts.escapeKeyTriggersCloseButton = true;
+
+    opts.launchAsync();
 }
 
 /*---------------------------------------------------------------------------

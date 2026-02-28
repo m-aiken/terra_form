@@ -9,8 +9,6 @@ class ColourPickerButton final
     , public juce::ChangeListener
 {
 public:
-    static constexpr int DIAMETER = 16;
-
     explicit ColourPickerButton(ColourPicker& colour_picker);
     ~ColourPickerButton() override;
 
