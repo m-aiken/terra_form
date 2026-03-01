@@ -39,10 +39,13 @@ TerraFormEditor::paint(juce::Graphics& g)
 void
 TerraFormEditor::resized()
 {
-    const auto& bounds        = getLocalBounds();
-    const auto& bounds_width  = bounds.getWidth();
-    const auto& bounds_height = bounds.getHeight();
-    waveform_display_.setBounds(bounds.withSizeKeepingCentre(bounds_width * 0.8, bounds_height * 0.8));
+    const auto& bounds                  = getLocalBounds();
+    const auto& bounds_width            = bounds.getWidth();
+    const auto& bounds_height           = bounds.getHeight();
+    const auto& waveform_section_width  = static_cast< int >(static_cast< float >(bounds_width) * 0.8f);
+    const auto& waveform_section_height = static_cast< int >(static_cast< float >(bounds_height) * 0.8f);
+
+    waveform_display_.setBounds(bounds.withSizeKeepingCentre(waveform_section_width, waveform_section_height));
 
     const bool hide_colour_picker = bounds_width < CPB_MIN_WINDOW_WIDTH && bounds_height < CPB_MIN_WINDOW_HEIGHT;
     colour_picker_button_.setBounds(PADDING, PADDING, CPB_DIAMETER, CPB_DIAMETER);

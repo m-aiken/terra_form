@@ -21,7 +21,7 @@ public:
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
 private:
-    juce::Path getWaveformPath(const TerraForm::FFT::FftDataBlock& fft_data, const int path_index) const;
+    juce::Path getWaveformPath(const TerraForm::FFT::FftDataBlock& fft_data, const size_t path_index) const;
 
     TerraFormProcessor&           processor_ref_;
     TerraForm::FFT::PathDataArray waveform_data_;
@@ -31,10 +31,10 @@ private:
 
     const float bin_width_;
 
-    double bounds_height_;
-    double waveform_height_;
-    double waveform_origin_offset_;
-    double waveform_width_;
+    float bounds_height_;
+    float waveform_height_;
+    float waveform_origin_offset_;
+    float waveform_width_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformDisplay)
 };
