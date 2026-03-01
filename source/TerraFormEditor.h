@@ -28,10 +28,9 @@ private:
         CPB_DIAMETER   = 16,  //! Colour picker button.
     };
 
-    TerraFormProcessor& processor_ref_;
-    ColourPicker        colour_picker_;
-    ColourPickerButton  colour_picker_button_;
-    WaveformDisplay     waveform_display_;
+    ColourPicker       colour_picker_;
+    ColourPickerButton colour_picker_button_;
+    WaveformDisplay    waveform_display_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TerraFormEditor)
 };

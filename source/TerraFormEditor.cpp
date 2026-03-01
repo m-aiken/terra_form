@@ -6,15 +6,9 @@
 */
 TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     : juce::AudioProcessorEditor(&p)
-    , processor_ref_(p)
     , colour_picker_button_(colour_picker_)
     , waveform_display_(p, colour_picker_)
 {
-    addAndMakeVisible(colour_picker_button_);
-    addAndMakeVisible(waveform_display_);
-
-    colour_picker_button_.onClick = [&]() { showColourPicker(); };
-
     setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
     setResizable(true, true);
 
@@ -27,6 +21,12 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     if (auto* main_window = juce::TopLevelWindow::getTopLevelWindow(0); main_window != nullptr) {
         main_window->setUsingNativeTitleBar(true);
     }
+
+    addAndMakeVisible(colour_picker_button_);
+    addAndMakeVisible(waveform_display_);
+
+    colour_picker_button_.setAlwaysOnTop(true);
+    colour_picker_button_.onClick = [&]() { showColourPicker(); };
 }
 
 /*---------------------------------------------------------------------------
