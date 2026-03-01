@@ -18,9 +18,14 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
     setResizable(true, true);
 
-    if (const auto* primary_display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
-        primary_display != nullptr) {
-        setResizeLimits(MIN_WIDTH, MIN_HEIGHT, primary_display->userArea.getWidth(), primary_display->userArea.getHeight());
+    // Set the resize limits based on the monitor size.
+    if (const auto* monitor = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay(); monitor != nullptr) {
+        setResizeLimits(MIN_WIDTH, MIN_HEIGHT, monitor->userArea.getWidth(), monitor->userArea.getHeight());
+    }
+
+    // Set the main window to use the native OS title bar.
+    if (auto* main_window = juce::TopLevelWindow::getTopLevelWindow(0); main_window != nullptr) {
+        main_window->setUsingNativeTitleBar(true);
     }
 }
 
