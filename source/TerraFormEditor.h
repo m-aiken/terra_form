@@ -21,9 +21,7 @@ private:
 
     enum {
         INITIAL_WIDTH  = 1024,
-        INITIAL_HEIGHT = 512,
-        MIN_WIDTH      = 156,
-        MIN_HEIGHT     = 64,
+        INITIAL_HEIGHT = 320,
         PADDING        = 8,
         CPB_DIAMETER   = 16,  //! Colour picker button.
     };
