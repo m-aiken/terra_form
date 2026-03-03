@@ -9,8 +9,9 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     , colour_picker_button_(colour_picker_)
     , waveform_display_(p, colour_picker_)
 {
-    setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
+    setSize(WINDOW_MINIMUM.WIDTH, WINDOW_MINIMUM.HEIGHT);
     setResizable(true, true);
+    getConstrainer()->setMinimumSize(WINDOW_MINIMUM.WIDTH, WINDOW_MINIMUM.HEIGHT);
 
     // Set the main window to use the native OS title bar.
     if (auto* main_window = juce::TopLevelWindow::getTopLevelWindow(0); main_window != nullptr) {
@@ -39,12 +40,15 @@ TerraFormEditor::paint(juce::Graphics& g)
 void
 TerraFormEditor::resized()
 {
-    const auto& bounds_i                = getLocalBounds();
-    const auto& bounds_f                = getLocalBounds().toFloat();
-    const auto& waveform_section_width  = static_cast< int >(bounds_f.getWidth() * 0.8f);
-    const auto& waveform_section_height = static_cast< int >(bounds_f.getHeight() * 0.8f);
+    const auto& bounds                 = getLocalBounds().toDouble();
+    const auto& waveform_bounds_width  = bounds.getWidth() * 0.8;
+    auto        waveform_bounds_height = waveform_bounds_width / WAVEFORM_BOUNDS_ASPECT_RATIO;
 
-    waveform_display_.setBounds(bounds_i.withSizeKeepingCentre(waveform_section_width, waveform_section_height));
+    // Ensure we maintain at least a minimum margin (PADDING * n) around the waveform container.
+    waveform_bounds_height = juce::jmin(waveform_bounds_height, bounds.getHeight() - (PADDING * 8.0));
+
+    waveform_display_.setBounds(
+        bounds.withSizeKeepingCentre(waveform_bounds_width, waveform_bounds_height).toNearestInt());
 
     colour_picker_button_.setBounds(PADDING, PADDING, CPB_DIAMETER, CPB_DIAMETER);
 }
