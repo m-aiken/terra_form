@@ -20,12 +20,14 @@ void
 FftBlockProducer::pushSample(const float sample)
 {
     if (fifo_index_ == TerraForm::FFT::FFT_SIZE) {
-        if (!next_block_ready_) {
+        if (!nextBlockReady()) {
+            juce::ScopedLock scoped_lock(fft_data_critical_section_);
+
             std::fill(fft_data_.begin(), fft_data_.end(), 0.f);
             std::copy(fifo_.begin(), fifo_.end(), fft_data_.begin());
             performFft(fft_data_);
 
-            next_block_ready_ = true;
+            next_block_ready_.set(true);
         }
 
         // Reset the fifo index.
@@ -39,20 +41,20 @@ FftBlockProducer::pushSample(const float sample)
 **
 */
 bool
-FftBlockProducer::nextBlockReady() const
+FftBlockProducer::nextBlockReady()
 {
-    return next_block_ready_;
+    return next_block_ready_.compareAndSetBool(false, true);
 }
 
 /*---------------------------------------------------------------------------
 **
 */
-TerraForm::FFT::FftDataBlock&
-FftBlockProducer::getNextBlock()
+void
+FftBlockProducer::getNextBlock(TerraForm::FFT::FftDataBlock& buffer_to_fill)
 {
-    next_block_ready_ = false;
+    juce::ScopedLock scoped_lock(fft_data_critical_section_);
 
-    return fft_data_;
+    std::copy(fft_data_.begin(), fft_data_.end(), buffer_to_fill.begin());
 }
 
 /*---------------------------------------------------------------------------

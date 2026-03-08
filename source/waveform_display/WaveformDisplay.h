@@ -24,6 +24,7 @@ private:
     juce::Path getWaveformPath(const TerraForm::FFT::FftDataBlock& fft_data, const size_t path_index) const;
 
     TerraFormProcessor&           processor_ref_;
+    TerraForm::FFT::FftDataBlock  fft_data_buffer_;
     TerraForm::FFT::PathDataArray waveform_data_;
 
     ColourPicker& colour_picker_;

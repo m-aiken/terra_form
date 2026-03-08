@@ -5,6 +5,7 @@
 */
 WaveformDisplay::WaveformDisplay(TerraFormProcessor& p, ColourPicker& colour_picker)
     : processor_ref_(p)
+    , fft_data_buffer_()
     , waveform_data_()
     , colour_picker_(colour_picker)
     , waveform_colour_(colour_picker_.getCurrentColour())
@@ -67,13 +68,14 @@ void
 WaveformDisplay::timerCallback()
 {
     if (processor_ref_.getFft().nextBlockReady()) {
-        const TerraForm::FFT::FftDataBlock& fft_data = processor_ref_.getFft().getNextBlock();
-
+        // Clear our buffer.
+        fft_data_buffer_.fill(0.f);
+        // Copy the latest FFT data to our buffer.
+        processor_ref_.getFft().getNextBlock(fft_data_buffer_);
         // Push all paths back 1 (rotate the existing path data to the right from begin+1 to end).
         std::rotate(waveform_data_.rbegin(), waveform_data_.rbegin() + 1, waveform_data_.rend());
-
         // Overwrite the new 1st element with new data.
-        waveform_data_[0] = fft_data;
+        waveform_data_.front().swap(fft_data_buffer_);
 
         repaint();
     }
