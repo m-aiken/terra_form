@@ -29,7 +29,7 @@ ColourPickerButton::paintButton(juce::Graphics& g, bool should_draw_button_as_hi
 {
     juce::ignoreUnused(should_draw_button_as_highlighted, should_draw_button_as_down);
 
-    const auto& bounds = getLocalBounds();
+    const auto& bounds = getLocalBounds().toFloat();
 
     juce::Path triangle;
     triangle.startNewSubPath(0, 0);

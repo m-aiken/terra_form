@@ -10,7 +10,7 @@ public:
     FftBlockProducer();
 
     void                          pushSample(const float sample);
-    bool                          nextBlockReady() const;
+    [[nodiscard]] bool            nextBlockReady() const;
     TerraForm::FFT::FftDataBlock& getNextBlock();
 
 private:
