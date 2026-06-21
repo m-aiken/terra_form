@@ -21,11 +21,11 @@ public:
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
 private:
-    juce::Path getWaveformPath(const TerraForm::FFT::FftDataBlock& fft_data, const size_t path_index) const;
+    juce::Path getWaveformPath(const terra_form::fft::FftDataBlock& fft_data, const size_t path_index) const;
 
-    TerraFormProcessor&           processor_ref_;
-    TerraForm::FFT::FftDataBlock  fft_data_buffer_;
-    TerraForm::FFT::PathDataArray waveform_data_;
+    TerraFormProcessor&            processor_ref_;
+    terra_form::fft::FftDataBlock  fft_data_buffer_;
+    terra_form::fft::PathDataArray waveform_data_;
 
     ColourPicker& colour_picker_;
     juce::Colour  waveform_colour_;

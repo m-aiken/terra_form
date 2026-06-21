@@ -4,8 +4,8 @@
 **
 */
 FftBlockProducer::FftBlockProducer()
-    : fft_(TerraForm::FFT::FFT_ORDER)
-    , windowing_function_(TerraForm::FFT::FFT_SIZE, juce::dsp::WindowingFunction< float >::hann)
+    : fft_(terra_form::fft::FFT_ORDER)
+    , windowing_function_(terra_form::fft::FFT_SIZE, juce::dsp::WindowingFunction< float >::hann)
     , fifo_()
     , fifo_index_(0)
     , fft_data_()
@@ -19,7 +19,7 @@ FftBlockProducer::FftBlockProducer()
 void
 FftBlockProducer::pushSample(const float sample)
 {
-    if (fifo_index_ == TerraForm::FFT::FFT_SIZE) {
+    if (fifo_index_ == terra_form::fft::FFT_SIZE) {
         if (!nextBlockReady()) {
             juce::ScopedLock scoped_lock(fft_data_critical_section_);
 
@@ -50,7 +50,7 @@ FftBlockProducer::nextBlockReady()
 **
 */
 void
-FftBlockProducer::getNextBlock(TerraForm::FFT::FftDataBlock& buffer_to_fill)
+FftBlockProducer::getNextBlock(terra_form::fft::FftDataBlock& buffer_to_fill)
 {
     juce::ScopedLock scoped_lock(fft_data_critical_section_);
 
@@ -61,9 +61,9 @@ FftBlockProducer::getNextBlock(TerraForm::FFT::FftDataBlock& buffer_to_fill)
 **
 */
 void
-FftBlockProducer::performFft(TerraForm::FFT::FftDataBlock& fft_data) const
+FftBlockProducer::performFft(terra_form::fft::FftDataBlock& fft_data) const
 {
-    using namespace TerraForm::FFT;
+    using namespace terra_form::fft;
 
     windowing_function_.multiplyWithWindowingTable(fft_data.data(), FFT_SIZE);
     fft_.performFrequencyOnlyForwardTransform(fft_data.data());
@@ -71,7 +71,7 @@ FftBlockProducer::performFft(TerraForm::FFT::FftDataBlock& fft_data) const
     juce::FloatVectorOperations::multiply(fft_data.data(), 1.f / static_cast< float >(NUM_BINS), NUM_BINS + 1);
 
     for (auto& val : fft_data) {
-        val = juce::Decibels::gainToDecibels(val, TerraForm::MIN_DB);
+        val = juce::Decibels::gainToDecibels(val, terra_form::MIN_DB);
     }
 }
 

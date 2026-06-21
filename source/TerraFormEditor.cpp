@@ -31,7 +31,7 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
 void
 TerraFormEditor::paint(juce::Graphics& g)
 {
-    g.fillAll(TerraForm::Colours::BACKGROUND_COLOUR);
+    g.fillAll(terra_form::colours::BACKGROUND_COLOUR);
 }
 
 /*---------------------------------------------------------------------------
