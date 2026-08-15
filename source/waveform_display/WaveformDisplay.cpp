@@ -20,7 +20,6 @@ WaveformDisplay::WaveformDisplay(TerraFormProcessor& p, ColourPicker& colour_pic
     }
 
     colour_picker_.addChangeListener(this);
-
     startTimerHz(60);
 }
 
@@ -40,11 +39,20 @@ void
 WaveformDisplay::paint(juce::Graphics& g)
 {
     for (size_t i = 0; i < terra_form::fft::NUM_PATHS; ++i) {
-        // Alpha value: descend from 1 to 0 as we progress through the data.
-        const auto alpha = 1.f - (static_cast< float >(i) / static_cast< float >(terra_form::fft::NUM_PATHS));
+        const auto& path   = getWaveformPath(waveform_data_.at(i), i);
+        const auto& bounds = path.getBounds();
 
-        g.setColour(waveform_colour_.withAlpha(alpha));
-        g.strokePath(getWaveformPath(waveform_data_.at(i), i), juce::PathStrokeType(1.f));
+        // Alpha/fade logic:
+        // 1. Each path fades from bright peaks to dim valleys.
+        // 2. The paths fade off into the distance.
+        const auto alpha    = 1.f - (static_cast< float >(i) / static_cast< float >(terra_form::fft::NUM_PATHS));
+        const auto gradient = juce::ColourGradient::vertical(waveform_colour_.withAlpha(0.1f * alpha),
+                                                             bounds.getCentreY(),
+                                                             waveform_colour_.withAlpha(alpha),
+                                                             bounds.getY());
+
+        g.setGradientFill(gradient);
+        g.strokePath(path, juce::PathStrokeType(1.f));
     }
 }
 
