@@ -9,7 +9,7 @@ TerraFormEditor::TerraFormEditor(TerraFormProcessor& p)
     , colour_picker_button_(colour_picker_)
     , waveform_display_(p, colour_picker_)
 {
-    setSize(WINDOW_MINIMUM.WIDTH, WINDOW_MINIMUM.HEIGHT);
+    setSize(WINDOW_MINIMUM.WIDTH * 3, static_cast< int >(WINDOW_MINIMUM.HEIGHT * 2.5));
     setResizable(true, true);
     getConstrainer()->setMinimumSize(WINDOW_MINIMUM.WIDTH, WINDOW_MINIMUM.HEIGHT);
 
