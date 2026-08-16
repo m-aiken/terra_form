@@ -117,7 +117,12 @@ WaveformDisplay::getWaveformPath(const terra_form::fft::FftDataBlock& fft_data, 
     path.startNewSubPath(waveform_x_origin, waveform_y_origin);
 
     for (size_t i = 1; i < terra_form::fft::NUM_BINS + 1; i += terra_form::fft::PATH_RESOLUTION) {
-        const auto raw_freq     = (static_cast< float >(i) * bin_width_);
+        const auto raw_freq = (static_cast< float >(i) * bin_width_);
+
+        if (raw_freq < terra_form::MIN_HZ || raw_freq > terra_form::MAX_HZ) {
+            continue;
+        }
+
         const auto norm_freq    = juce::mapFromLog10(raw_freq, terra_form::MIN_HZ, terra_form::MAX_HZ);
         const auto x_coordinate = std::floor(norm_freq * waveform_width_);
 
