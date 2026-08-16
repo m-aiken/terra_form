@@ -5,7 +5,7 @@
 namespace terra_form
 {
 
-inline constexpr float MIN_HZ = 20.f;
+inline constexpr float MIN_HZ = 60.f;
 inline constexpr float MAX_HZ = 20000.f;
 inline constexpr float MIN_DB = -96.f;
 inline constexpr float MAX_DB = 0.f;
