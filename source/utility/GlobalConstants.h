@@ -16,7 +16,7 @@ namespace fft
     inline constexpr int FFT_ORDER       = 11;
     inline constexpr int FFT_SIZE        = 1 << FFT_ORDER;  //! 2048
     inline constexpr int NUM_BINS        = FFT_SIZE / 2;
-    inline constexpr int NUM_PATHS       = 48;
+    inline constexpr int NUM_PATHS       = 96;
     inline constexpr int PATH_RESOLUTION = 1;
 
     typedef std::array< float, FFT_SIZE * 2 >     FftDataBlock;
