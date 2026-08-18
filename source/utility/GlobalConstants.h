@@ -27,8 +27,8 @@ namespace fft
 namespace colours
 {
 
-    inline const juce::Colour BACKGROUND_COLOUR       = { 37u, 33u, 38u };     //! Dark grey.
-    inline const juce::Colour DEFAULT_WAVEFORM_COLOUR = { 153u, 200u, 202u };  //! Mint blue.
+    inline const juce::Colour BACKGROUND_COLOUR       = { 37u, 33u, 38u };    //! Dark grey.
+    inline const juce::Colour DEFAULT_WAVEFORM_COLOUR = { 226u, 114u, 91u };  //! Terracotta.
 
 }  // namespace colours
 
